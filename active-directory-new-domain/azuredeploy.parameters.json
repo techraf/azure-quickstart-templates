@@ -2,10 +2,10 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "adminUsername": {
+    "domainAdminUsername": {
       "value": "GEN-USER"
     },
-    "adminPassword": {
+    "domainAdminPassword": {
       "value": "GEN-PASSWORD"
     },
     "domainName": {

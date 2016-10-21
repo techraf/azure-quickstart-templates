@@ -9,13 +9,13 @@
       },
       "defaultValue": "Standard_D2_v2"
     },
-    "adminUsername": {
+    "domainAdminUsername": {
       "type": "string",
       "metadata": {
         "description": "The name of the administrator account of the new VM and domain"
       }
     },
-    "adminPassword": {
+    "domainAdminPassword": {
       "type": "securestring",
       "metadata": {
         "description": "The password for the administrator account of the new VM and domain"
@@ -215,8 +215,8 @@
         },
         "osProfile": {
           "computerName": "[variables('adVMName')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
+          "domainAdminUsername": "[parameters('domainAdminUsername')]",
+          "domainAdminPassword": "[parameters('domainAdminPassword')]"
         },
         "storageProfile": {
           "imageReference": {
@@ -274,14 +274,14 @@
               "Properties": {
                 "DomainName": "[parameters('domainName')]",
                 "AdminCreds": {
-                  "UserName": "[parameters('adminUsername')]",
+                  "UserName": "[parameters('domainAdminUsername')]",
                   "Password": "PrivateSettingsRef:AdminPassword"
                 }
               }
             },
             "protectedSettings": {
               "Items": {
-                "AdminPassword": "[parameters('adminPassword')]"
+                "AdminPassword": "[parameters('domainAdminPassword')]"
               }
             }
           }
