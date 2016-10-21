@@ -2,6 +2,13 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "vmSizeDC": {
+      "type": "string",
+      "metadata": {
+        "description": "The size for the Domain Controller"
+      },
+      "defaultValue": "Standard_D2_v2"
+    },
     "adminUsername": {
       "type": "string",
       "metadata": {
@@ -201,7 +208,7 @@
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "Standard_D2_v2"
+          "vmSize": "[parameters('vmSizeDC')]"
         },
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
