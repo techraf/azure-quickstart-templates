@@ -27,10 +27,16 @@
         "description": "The FQDN of the Active Directory Domain to be created"
       }
     },
-    "dnsPrefix": {
+    "domainControllerVMName": {
       "type": "string",
       "metadata": {
-        "description": "The DNS prefix for the public IP address used by the Load Balancer"
+        "description": "VM name for the Domain Controller"
+      }
+    },
+    "domainControllerDNSPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "The DNS prefix for the public IP address used by the DC Load Balancer"
       }
     },
     "_artifactsLocation": {
@@ -57,7 +63,6 @@
     "adRDPNAT": "adRDP",
     "adNicName": "adNic",
     "adNicIPAddress": "10.0.0.4",
-    "adVMName": "adVM",
     "adSubnetName": "adSubnet",
     "adSubnetAddressPrefix": "10.0.0.0/24",
     "publicIPAddressName": "adPublicIP",
@@ -197,7 +202,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('adVMName')]",
+      "name": "[parameters('domainControllerVMName')]",
       "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -214,7 +219,7 @@
           "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
         },
         "osProfile": {
-          "computerName": "[variables('adVMName')]",
+          "computerName": "[parameters('domainControllerVMName')]",
           "domainAdminUsername": "[parameters('domainAdminUsername')]",
           "domainAdminPassword": "[parameters('domainAdminPassword')]"
         },
@@ -228,7 +233,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))).primaryEndpoints.blob, 'vhds/', variables('adVMName'), '-os-disk.vhd')]"
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))).primaryEndpoints.blob, 'vhds/', parameters('domainControllerVMName'), '-os-disk.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -236,9 +241,9 @@
           "dataDisks": [
             {
               "vhd": {
-                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))).primaryEndpoints.blob, 'vhds/', variables('adVMName'), '-data-disk.vhd')]"
+                "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))).primaryEndpoints.blob, 'vhds/', parameters('domainControllerVMName'), '-data-disk.vhd')]"
               },
-              "name": "[concat(variables('adVMName'), '-data-disk')]",
+              "name": "[concat(parameters('domainControllerVMName'), '-data-disk')]",
               "caching": "None",
               "createOption": "Empty",
               "diskSizeGB": "1000",
@@ -261,7 +266,7 @@
           "apiVersion": "2015-06-15",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', variables('adVMName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('domainControllerVMName'))]"
           ],
           "properties": {
             "publisher": "Microsoft.Powershell",
@@ -293,7 +298,7 @@
       "name": "UpdateVNetDNS",
       "apiVersion": "2016-02-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('adVMName'), 'CreateADForest')]"
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('domainControllerVMName'), 'CreateADForest')]"
       ],
       "properties": {
         "mode": "Incremental",
